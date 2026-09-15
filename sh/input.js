@@ -21,29 +21,6 @@ function parseBoolEnv(name) {
     throw new Error('环境变量布尔无效 ' + name + ': ' + process.env[name]);
 }
 
-const atAllEnv = process.env.AT_ALL;
-let atAll = false;
-if (atAllEnv !== undefined && atAllEnv !== '')
-    atAll = atAllEnv === '1' || atAllEnv === 'true';
-
-const robotPush = {
-    open: parseBoolEnv('ROBOT_PUSH'),
-    key: process.env.ROBOT_KEY != null ? String(process.env.ROBOT_KEY) : '',
-};
-
-const start = {
-    open: parseBoolEnv('START_OPEN'),
-    content: process.env.START_CONTENT != null ? String(process.env.START_CONTENT) : '',
-};
-
-const end = {
-    open: parseBoolEnv('END_OPEN'),
-    content: process.env.END_CONTENT != null ? String(process.env.END_CONTENT) : '',
-    time: process.env.END_TIME != null ? String(process.env.END_TIME) : '',
-};
-
-const sentence = { open: parseBoolEnv('SENTENCE_OPEN') };
-
 const lottery = {
     open: parseBoolEnv('LOTTERY_OPEN'),
     SD: parseEnvJson('LOTTERY_SD'),
@@ -86,4 +63,4 @@ const classTable = {
     hr: parseEnvJson('CLASS_TABLE_HR'),
 };
 
-module.exports = { robotPush, start, lottery, weather, daily, gasoline, end, atAll, classTable, sentence }
+module.exports = { lottery, weather, daily, gasoline, classTable }

@@ -37,12 +37,12 @@ async function sendMqttMsg(content, licenseContent) {
 	const seconds = String(now.getSeconds()).padStart(2, '0');
 	const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 	const licenseBody = (licenseContent || '')
-		.replace(/^\s*\n*💳证件有效期\s*\n*/u, '')
+		.replace(/^\s*\n*đłčŻäťśććć\s*\n*/u, '')
 		.trim()
 	const mqttLicense =
-		licenseBody.length > 0 ? '💳证件有效期\n\n' + licenseBody : ''
+		licenseBody.length > 0 ? 'đłčŻäťśććć\n\n' + licenseBody : ''
 	const data = {
-		content: '📅节日提醒\n\n' + content,
+		content: 'đčćĽćé\n\n' + content,
 		license: mqttLicense,
 		timestamp: timestamp
 	};
@@ -87,46 +87,53 @@ async function sendMqttMsg(content, licenseContent) {
 	});
 }
 
-//处理当天阴历和当前天�?const handleFestivalSolarDate = (nowDate, lunarDate, currentYear, content) => {
+//ĺ¤çĺ˝ĺ¤Šé´ĺĺĺ˝ĺĺ¤Šć°
+const handleFestivalSolarDate = (nowDate, lunarDate, currentYear, content) => {
     let festivalDate = '01-01';
 
-    //N-2�?    let pre2FestivalDate = (currentYear-2) + '-' + festivalDate;
+    //N-2ĺš´
+    let pre2FestivalDate = (currentYear-2) + '-' + festivalDate;
     let pre2FestivalSolarDate = calendar.conversion(pre2FestivalDate);
     let newlFtvYearDate = pre2FestivalSolarDate;
 
-    //N-1�?    let preFestivalDate = (currentYear-1) + '-' + festivalDate;
+    //N-1ĺš´
+    let preFestivalDate = (currentYear-1) + '-' + festivalDate;
     let preFestivalSolarDate = calendar.conversion(preFestivalDate);
     if (new Date(nowDate) >= new Date(preFestivalSolarDate)){
         newlFtvYearDate = preFestivalSolarDate;
     }
 
-    //N�?    let curFestivalDate = currentYear + '-' + festivalDate;
+    //Nĺš´
+    let curFestivalDate = currentYear + '-' + festivalDate;
     let curFestivalSolarDate = calendar.conversion(curFestivalDate);
     if (new Date(nowDate) >= new Date(curFestivalSolarDate)){
         newlFtvYearDate = curFestivalSolarDate;
     }
 
-    //N+1�?    let nextFestivalDate = (currentYear+1) + '-' + festivalDate;
+    //N+1ĺš´
+    let nextFestivalDate = (currentYear+1) + '-' + festivalDate;
     let nextFestivalSolarDate = calendar.conversion(nextFestivalDate);
     if (new Date(nowDate) >= new Date(nextFestivalSolarDate)){
         newlFtvYearDate = nextFestivalSolarDate;
     }
 
-    //N+2�?    let next2FestivalDate = (currentYear+2) + '-' + festivalDate;
+    //N+2ĺš´
+    let next2FestivalDate = (currentYear+2) + '-' + festivalDate;
     let next2FestivalSolarDate = calendar.conversion(next2FestivalDate);
     if (new Date(nowDate) >= new Date(next2FestivalSolarDate)){
         newlFtvYearDate = next2FestivalSolarDate;
     }
 
-    //当前天数
+    //ĺ˝ĺĺ¤Šć°
     let yearDiffTime = calendar.diffTimeToDaily(nowDate, newlFtvYearDate)+1;
-    let lunarDateStr = lunarDate.gzYear + lunarDate.Animal +'�? + lunarDate.IMonthCn + lunarDate.IDayCn + ' �? + yearDiffTime + '�? ;
+    let lunarDateStr = lunarDate.gzYear + lunarDate.Animal +'ĺš´' + lunarDate.IMonthCn + lunarDate.IDayCn + ' çŹŹ' + yearDiffTime + 'ĺ¤Š' ;
     content.push(`${nowDate} ${lunarDate.ncWeek} ${lunarDate.astro}\n${lunarDateStr}\n`);
 };
 
-//处理纪念�?//type: 0 为累计周�?阳历)
-//type: 1 为倒计周年(阳历)
-//type: 2 为倒计周年(阴历)
+//ĺ¤ççşŞĺżľćĽ
+//type: 0 ä¸şç´ŻčŽĄĺ¨ĺš´(éłĺ)
+//type: 1 ä¸şĺčŽĄĺ¨ĺš´(éłĺ)
+//type: 2 ä¸şĺčŽĄĺ¨ĺš´(é´ĺ)
 const handleAnniversaryDate = (nowDate, currentYear, todayArr, latelyArr) => {
     let anniversaryArr = daily.anniversary;
     if(anniversaryArr.length > 0){
@@ -137,28 +144,34 @@ const handleAnniversaryDate = (nowDate, currentYear, todayArr, latelyArr) => {
             let anniversaryName = element.name;
             let anniversaryDate = element.date;
             let anniversaryType = element.type;
-            //计算差�?下次
+            //čŽĄçŽĺˇŽĺź ä¸ćŹĄ
             let targetArr = anniversaryDate.split('-');
             let anniversaryYear = targetArr[0];
             let anniversaryMonth = targetArr[1];
             let anniversaryDay = targetArr[2];
 
-            //N+1�?            let nextAnniversaryDate = (currentYear+1) + '-' + anniversaryMonth+'-'+anniversaryDay;
-            //阴历转阳�?            if (anniversaryType == 2) {
+            //N+1ĺš´
+            let nextAnniversaryDate = (currentYear+1) + '-' + anniversaryMonth+'-'+anniversaryDay;
+            //é´ĺč˝Źéłĺ
+            if (anniversaryType == 2) {
                 nextAnniversaryDate = calendar.conversion(nextAnniversaryDate);
             }
             let resAnniversaryDate = nextAnniversaryDate;
 
-            //N�?            let curAnniversaryDate = currentYear + '-' + anniversaryMonth+'-'+anniversaryDay;
-            //阴历转阳�?            if (anniversaryType == 2) {
+            //Nĺš´
+            let curAnniversaryDate = currentYear + '-' + anniversaryMonth+'-'+anniversaryDay;
+            //é´ĺč˝Źéłĺ
+            if (anniversaryType == 2) {
                 curAnniversaryDate = calendar.conversion(curAnniversaryDate);
             }
             if (new Date(nowDate) <= new Date(curAnniversaryDate)){
                 resAnniversaryDate = curAnniversaryDate;
             }
 
-            //N-1�?            let preAnniversaryDate = (currentYear-1) + '-' + anniversaryMonth+'-'+anniversaryDay;
-            //阴历转阳�?            if (anniversaryType == 2) {
+            //N-1ĺš´
+            let preAnniversaryDate = (currentYear-1) + '-' + anniversaryMonth+'-'+anniversaryDay;
+            //é´ĺč˝Źéłĺ
+            if (anniversaryType == 2) {
                 preAnniversaryDate = calendar.conversion(preAnniversaryDate);
             }
             if (new Date(nowDate) <= new Date(preAnniversaryDate)){
@@ -175,15 +188,15 @@ const handleAnniversaryDate = (nowDate, currentYear, todayArr, latelyArr) => {
 
                 let diffYear = currentYear - anniversaryYear;
                 let todayDate = '<'+anniversaryDate.split('-').join('.')+'>';
-                let todayContent = ' ' + diffYear+'周年快乐';
-                if (anniversaryName == '结婚纪念�?){
+                let todayContent = ' ' + diffYear+'ĺ¨ĺš´ĺżŤäš';
+                if (anniversaryName == 'çťĺŠçşŞĺżľćĽ'){
                     let marriageArr = daily.marriage;
                     for (let i = 0; i < marriageArr.length; i++) {
                         const element = marriageArr[i];
                         let marriageName = element.name;
                         let marriageAge = element.age;
                         if(marriageAge == diffYear){
-                            todayContent = marriageName +'-'+ diffYear+'周年快乐';
+                            todayContent = marriageName +'-'+ diffYear+'ĺ¨ĺš´ĺżŤäš';
                         }
                     }
                 }
@@ -196,8 +209,9 @@ const handleAnniversaryDate = (nowDate, currentYear, todayArr, latelyArr) => {
                 tempTime = diffTime;
             }
             if (anniversaryType == 0) {
-                //计算累计�?                let sumTime = calendar.sumTimeToNow(anniversaryDate, nowDate);
-                loveContent = `\n💘我们在一起恋�? ${sumTime}天`;
+                //čŽĄçŽç´ŻčŽĄĺź
+                let sumTime = calendar.sumTimeToNow(anniversaryDate, nowDate);
+                loveContent = `\nđćäťŹĺ¨ä¸čľˇćçą: ${sumTime}ĺ¤Š`;
             }else{
                 if (diffTime > 0&&diffTime < tempTime) {
                     tempName = anniversaryName;
@@ -211,7 +225,7 @@ const handleAnniversaryDate = (nowDate, currentYear, todayArr, latelyArr) => {
     }
 };
 
-//处理生日
+//ĺ¤ççćĽ
 const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr) => {
     let birthdayArr = daily.birthday;
     if(birthdayArr.length > 0){
@@ -221,22 +235,26 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
             const element = birthdayArr[i];
             let birthdayName = element.name;
             let birthdayDate = element.date;
-            //计算差�?            let targetArr = birthdayDate.split('-');
+            //čŽĄçŽĺˇŽĺź
+            let targetArr = birthdayDate.split('-');
             let birthdayYear = targetArr[0];
             let birthdayMonth = targetArr[1];
             let birthdayDay = targetArr[2];
 
-            //N+1�?            let nextBirthdayDate = (currentYear+1) + '-' + birthdayMonth+'-'+birthdayDay;
+            //N+1ĺš´
+            let nextBirthdayDate = (currentYear+1) + '-' + birthdayMonth+'-'+birthdayDay;
             let nextBirthdaySolarDate = calendar.conversion(nextBirthdayDate);
             let resBirthdayDate = nextBirthdaySolarDate;
 
-            //N�?            let curBirthdayDate = currentYear + '-' + birthdayMonth+'-'+birthdayDay;
+            //Nĺš´
+            let curBirthdayDate = currentYear + '-' + birthdayMonth+'-'+birthdayDay;
             let curBirthdaySolarDate = calendar.conversion(curBirthdayDate);
             if (new Date(nowDate) <= new Date(curBirthdaySolarDate)){
                 resBirthdayDate = curBirthdaySolarDate;
             }
 
-            //N-1�?            let preBirthdayDate = (currentYear-1) + '-' + birthdayMonth+'-'+birthdayDay;
+            //N-1ĺš´
+            let preBirthdayDate = (currentYear-1) + '-' + birthdayMonth+'-'+birthdayDay;
             let preBirthdaySolarDate = calendar.conversion(preBirthdayDate);
             if (new Date(nowDate) <= new Date(preBirthdaySolarDate)){
                 resBirthdayDate = preBirthdaySolarDate;
@@ -244,11 +262,11 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
 
             let diffTime = calendar.diffTimeToDaily(nowDate, resBirthdayDate);
             if (diffTime == 0) {
-                //获取生日星座
+                //čˇĺçćĽćĺş§
                 let anniversaryAstro = lunarDate.astro;
                 let todayDate = '<'+birthdayDate.split('-').join('.')+'>';
                 let todayAge = currentYear - birthdayYear;
-                let todayContent = todayAge + '�? + anniversaryAstro;
+                let todayContent = todayAge + 'ĺ˛' + anniversaryAstro;
                 var obj = {todayName:birthdayName, todayDate:todayDate, todayContent:todayContent};
                 todayArr.push(obj);
             }
@@ -269,7 +287,8 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
     }
 };
 
-// 处理法定节假�?- 修复�?const handleLegalDate = (nowDate, currentMDDate, currentYear, todayArr, latelyArr, tipsArr) => {
+// ĺ¤çćłĺŽčĺćĽ - äżŽĺ¤ç
+const handleLegalDate = (nowDate, currentMDDate, currentYear, todayArr, latelyArr, tipsArr) => {
     let legalArr = daily.legal;
     if(legalArr.length > 0){
         let tempName = '';
@@ -283,17 +302,18 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
             let legalRepair = element.repair;
             var existHoliday = false;
 
-            // 补班或放假提�?            if(legalHoliday != 0){
+            // čĄĽç­ććžĺćç¤ş
+            if(legalHoliday != 0){
                 existHoliday = legalHoliday.includes(currentMDDate);
                 if(existHoliday){
                     let holidayFrist = currentYear + '-'+ legalHoliday[0];
                     let holidayDiff = calendar.sumTimeToNow(holidayFrist, nowDate);
-                    tipsArr.push(`⛱祝大家假期愉快！`);
-                    tipsArr.push(`* ${legalName}放假: �?{holidayDiff+1}�?`)
+                    tipsArr.push(`âąçĽĺ¤§ĺŽśĺććĺżŤďź`);
+                    tipsArr.push(`* ${legalName}ćžĺ: çŹŹ${holidayDiff+1}ĺ¤Š `)
                     if(legalFreeway == 1){
-                        tipsArr.push(`* 全国高速通行: 免费 \n`)
+                        tipsArr.push(`* ĺ¨ĺ˝éŤééčĄ: ĺč´š \n`)
                     }else{
-                        tipsArr.push(`* 全国高速通行: 收费 \n`)
+                        tipsArr.push(`* ĺ¨ĺ˝éŤééčĄ: ćśč´š \n`)
                     }
                 }
             }
@@ -301,31 +321,33 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
             if(legalRepair != 0){
                 let existRepair = legalRepair.includes(currentMDDate);
                 if(existRepair){
-                    tipsArr.push(`📟今天${legalName}补班，努力工作！\n `);
+                    tipsArr.push(`đäťĺ¤Š${legalName}čĄĽç­ďźĺŞĺĺˇĽä˝ďź\n `);
                 }
             }
 
-            // 计算差�?- 修复跨年问题
+            // čŽĄçŽĺˇŽĺź - äżŽĺ¤čˇ¨ĺš´éŽé˘
             let targetArr = legalDate.split('-');
             let month = targetArr[0];
             let day = targetArr[1];
 
-            // 创建一个当前年份的日期
+            // ĺĺťşä¸ä¸Şĺ˝ĺĺš´äť˝çćĽć
             let curYearDate = new Date(currentYear, parseInt(month) - 1, parseInt(day));
             let now = new Date(nowDate);
 
-            // 计算下一个节假日日期
+            // čŽĄçŽä¸ä¸ä¸ŞčĺćĽćĽć
             let nextLegalDate;
             if (curYearDate >= now) {
-                // 如果今年的节假日还没过，就是今年�?                nextLegalDate = `${currentYear}-${month}-${day}`;
+                // ĺŚćäťĺš´çčĺćĽčżć˛Ąčżďźĺ°ąćŻäťĺš´ç
+                nextLegalDate = `${currentYear}-${month}-${day}`;
             } else {
-                // 如果今年的节假日已经过了，就是明年的
+                // ĺŚćäťĺš´çčĺćĽĺˇ˛çťčżäşďźĺ°ąćŻćĺš´ç
                 nextLegalDate = `${currentYear + 1}-${month}-${day}`;
             }
 
-            // 计算天数�?            let diffTime = calendar.diffTimeToDaily(nowDate, nextLegalDate);
+            // čŽĄçŽĺ¤Šć°ĺˇŽ
+            let diffTime = calendar.diffTimeToDaily(nowDate, nextLegalDate);
 
-            // 确保diffTime是非负数
+            // çĄŽäżdiffTimećŻéč´ć°
             diffTime = Math.max(0, diffTime);
 
             if (diffTime == 0) {
@@ -341,7 +363,7 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
                 }
             }
 
-            // 假期提示逻辑保持不变
+            // ĺććç¤şéťčžäżćä¸ĺ
             let startYearLegalDate = nowDate;
             let endYearLegalDate = nowDate;
             let startLegalHoliday = legalHoliday[0];
@@ -351,37 +373,37 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
             if (diffTime + legalHolidayNum < 15) {
                 let legalHolidayNum = legalHoliday.length;
                 if (legalHolidayNum == 1) {
-                    tipsArr.push(`⏳距�?{legalName}放假还有${diffTime}�?`);
+                    tipsArr.push(`âłčˇçŚť${legalName}ćžĺčżć${diffTime}ĺ¤Š `);
                     let startYearLegalDate = currentYear + '-' + startLegalHoliday;
                     let startDate = new Date(startYearLegalDate);
 
-                    // 如果开始日期已经过去，使用下一年的
+                    // ĺŚćĺźĺ§ćĽćĺˇ˛çťčżĺťďźä˝żç¨ä¸ä¸ĺš´ç
                     if (startDate < now) {
                         startYearLegalDate = (currentYear + 1) + '-' + startLegalHoliday;
                     }
 
                     if(legalFreeway == 1){
-                        tipsArr.push(`* 高速通行: 免费`)
+                        tipsArr.push(`* éŤééčĄ: ĺč´š`)
                     }else{
-                        tipsArr.push(`* 高速通行: 收费`)
+                        tipsArr.push(`* éŤééčĄ: ćśč´š`)
                     }
 
                     if (legalRepair != 0) {
                         let legalRepairNum = legalRepair.length;
-                        tipsArr.push(`* 补班${legalRepairNum}�? ${legalRepair.join('�?)}`)
+                        tipsArr.push(`* čĄĽç­${legalRepairNum}ĺ¤Š: ${legalRepair.join('ă')}`)
                     }
 
                     if (legalHolidayNum > 2){
-                        tipsArr.push(`* 假期${legalHolidayNum}�? ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
+                        tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
                     }else{
-                        tipsArr.push(`* 假期${legalHolidayNum}�? ${legalHoliday.join('�?)}\n`)
+                        tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${legalHoliday.join('ă')}\n`)
                     }
 
                 } else if (!existHoliday){
                     let startYearLegalDate = currentYear + '-' + startLegalHoliday;
                     let startDate = new Date(startYearLegalDate);
 
-                    // 如果开始日期已经过去，使用下一年的
+                    // ĺŚćĺźĺ§ćĽćĺˇ˛çťčżĺťďźä˝żç¨ä¸ä¸ĺš´ç
                     if (startDate < now) {
                         startYearLegalDate = (currentYear + 1) + '-' + startLegalHoliday;
                     }
@@ -390,22 +412,22 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
                     startDiffTime = Math.max(0, startDiffTime);
 
                     if (startDiffTime > 0){
-                        tipsArr.push(`⏳距�?{legalName}放假还有${startDiffTime}天`)
+                        tipsArr.push(`âłčˇçŚť${legalName}ćžĺčżć${startDiffTime}ĺ¤Š`)
                         if(legalFreeway == 1){
-                            tipsArr.push(`* 高速通行: 免费`)
+                            tipsArr.push(`* éŤééčĄ: ĺč´š`)
                         }else{
-                            tipsArr.push(`* 高速通行: 收费`)
+                            tipsArr.push(`* éŤééčĄ: ćśč´š`)
                         }
 
                         if (legalRepair != 0) {
                             let legalRepairNum = legalRepair.length;
-                            tipsArr.push(`* 补班${legalRepairNum}�? ${legalRepair.join('�?)}`)
+                            tipsArr.push(`* čĄĽç­${legalRepairNum}ĺ¤Š: ${legalRepair.join('ă')}`)
                         }
 
                         if (legalHolidayNum > 2){
-                            tipsArr.push(`* 假期${legalHolidayNum}�? ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
+                            tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
                         }else{
-                            tipsArr.push(`* 假期${legalHolidayNum}�? ${legalHoliday.join('�?)}\n`)
+                            tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${legalHoliday.join('ă')}\n`)
                         }
                     }
                 }
@@ -418,7 +440,8 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
     }
 };
 
-//处理法定节假�?// const handleLegalDate = (nowDate, currentMDDate, currentYear, todayArr, latelyArr, tipsArr) => {
+//ĺ¤çćłĺŽčĺćĽ
+// const handleLegalDate = (nowDate, currentMDDate, currentYear, todayArr, latelyArr, tipsArr) => {
 //     let legalArr = daily.legal;
 //     if(legalArr.length > 0){
 //         let tempName = '';
@@ -431,28 +454,30 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
 //             let legalHoliday = element.holiday;
 //             let legalRepair = element.repair;
 //             var existHoliday = false;
-//             //补班或放假提�?//             if(legalHoliday != 0){
+//             //čĄĽç­ććžĺćç¤ş
+//             if(legalHoliday != 0){
 //                 existHoliday = legalHoliday.includes(currentMDDate);
 //                 if(existHoliday){
 //                     let holidayFrist =currentYear + '-'+ legalHoliday[0];
 //                     let holidayDiff = calendar.sumTimeToNow(holidayFrist, nowDate);
-//                     tipsArr.push(`⛱祝大家假期愉快！`);
-//                     tipsArr.push(`* ${legalName}放假: �?{holidayDiff+1}�?`)
+//                     tipsArr.push(`âąçĽĺ¤§ĺŽśĺććĺżŤďź`);
+//                     tipsArr.push(`* ${legalName}ćžĺ: çŹŹ${holidayDiff+1}ĺ¤Š `)
 //                     if(legalFreeway == 1){
-//                         tipsArr.push(`* 全国高速通行: 免费 \n`)
+//                         tipsArr.push(`* ĺ¨ĺ˝éŤééčĄ: ĺč´š \n`)
 //                     }else{
-//                         tipsArr.push(`* 全国高速通行: 收费 \n`)
+//                         tipsArr.push(`* ĺ¨ĺ˝éŤééčĄ: ćśč´š \n`)
 //                     }
 //                 }
 //             }
 //             if(legalRepair != 0){
 //                 let existRepair = legalRepair.includes(currentMDDate);
 //                 if(existRepair){
-//                     tipsArr.push(`📟今天${legalName}补班，努力工作！\n `);
+//                     tipsArr.push(`đäťĺ¤Š${legalName}čĄĽç­ďźĺŞĺĺˇĽä˝ďź\n `);
 //                 }
 //             }
 
-//             //计算差�?//             let targetArr = legalDate.split('-');
+//             //čŽĄçŽĺˇŽĺź
+//             let targetArr = legalDate.split('-');
 //             let currentYearBar = currentYear + '-';
 //             let nextLegalDate = currentYearBar + targetArr[0] + '-' + targetArr[1];
 //             if (new Date(nowDate) > new Date(nextLegalDate)) {
@@ -481,26 +506,26 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
 //             if (diffTime+legalHolidayNum < 15) {
 //                 let legalHolidayNum = legalHoliday.length;
 //                 if (legalHolidayNum == 1) {
-//                     tipsArr.push(`⏳距�?{legalName}放假还有${diffTime}�?`);
+//                     tipsArr.push(`âłčˇçŚť${legalName}ćžĺčżć${diffTime}ĺ¤Š `);
 //                     startYearLegalDate = currentYearBar + startLegalHoliday;
 //                     if (new Date(nowDate) > new Date(startYearLegalDate)) {
 //                         startYearLegalDate = currentYear + 1 + '-' + startLegalHoliday;
 //                     }
 //                     if(legalFreeway == 1){
-//                         tipsArr.push(`* 高速通行: 免费`)
+//                         tipsArr.push(`* éŤééčĄ: ĺč´š`)
 //                     }else{
-//                         tipsArr.push(`* 高速通行: 收费`)
+//                         tipsArr.push(`* éŤééčĄ: ćśč´š`)
 //                     }
 
 //                     if (legalRepair != 0) {
 //                         let legalRepairNum = legalRepair.length;
-//                         tipsArr.push(`* 补班${legalRepairNum}�? ${legalRepair.join('�?)}`)
+//                         tipsArr.push(`* čĄĽç­${legalRepairNum}ĺ¤Š: ${legalRepair.join('ă')}`)
 //                     }
 
 //                     if (legalHolidayNum > 2){
-//                         tipsArr.push(`* 假期${legalHolidayNum}�? ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
+//                         tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
 //                     }else{
-//                         tipsArr.push(`* 假期${legalHolidayNum}�? ${legalHoliday.join('�?)}\n`)
+//                         tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${legalHoliday.join('ă')}\n`)
 //                     }
 
 //                 } else if (!existHoliday){
@@ -508,22 +533,22 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
 //                     endYearLegalDate = currentYearBar + endLegalHoliday;
 //                     let startDiffTime = calendar.diffTimeToDaily(nowDate, startYearLegalDate);
 //                     if (startDiffTime > 0){
-//                         tipsArr.push(`⏳距�?{legalName}放假还有${startDiffTime}天`)
+//                         tipsArr.push(`âłčˇçŚť${legalName}ćžĺčżć${startDiffTime}ĺ¤Š`)
 //                         if(legalFreeway == 1){
-//                             tipsArr.push(`* 高速通行: 免费`)
+//                             tipsArr.push(`* éŤééčĄ: ĺč´š`)
 //                         }else{
-//                             tipsArr.push(`* 高速通行: 收费`)
+//                             tipsArr.push(`* éŤééčĄ: ćśč´š`)
 //                         }
 
 //                         if (legalRepair != 0) {
 //                             let legalRepairNum = legalRepair.length;
-//                             tipsArr.push(`* 补班${legalRepairNum}�? ${legalRepair.join('�?)}`)
+//                             tipsArr.push(`* čĄĽç­${legalRepairNum}ĺ¤Š: ${legalRepair.join('ă')}`)
 //                         }
 
 //                         if (legalHolidayNum > 2){
-//                             tipsArr.push(`* 假期${legalHolidayNum}�? ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
+//                             tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${startLegalHoliday} ~ ${endLegalHoliday}\n`)
 //                         }else{
-//                             tipsArr.push(`* 假期${legalHolidayNum}�? ${legalHoliday.join('�?)}\n`)
+//                             tipsArr.push(`* ĺć${legalHolidayNum}ĺ¤Š: ${legalHoliday.join('ă')}\n`)
 //                         }
 //                     }
 //                 }
@@ -536,7 +561,7 @@ const handleBirthdayDate = (nowDate, lunarDate, currentYear, todayArr, latelyArr
 //     }
 // };
 
-//处理阴历节日
+//ĺ¤çé´ĺčćĽ
 const handleLFtvDate = (nowDate, currentYear, todayArr, latelyArr) => {
     let lFtvArr = daily.lFtv;
     if(lFtvArr.length > 0){
@@ -547,23 +572,27 @@ const handleLFtvDate = (nowDate, currentYear, todayArr, latelyArr) => {
             let lFtvName = element.name;
             let lFtvDate = element.date;
 
-            //N+1�?            let nextlFtvYearDate = (currentYear+1) + '-' + lFtvDate;
+            //N+1ĺš´
+            let nextlFtvYearDate = (currentYear+1) + '-' + lFtvDate;
             let nextlFtvSolarDate = calendar.conversion(nextlFtvYearDate);
             let reslFtvSolarDate = nextlFtvSolarDate;
 
-            //N�?            let curlFtvYearDate = currentYear + '-' + lFtvDate;
+            //Nĺš´
+            let curlFtvYearDate = currentYear + '-' + lFtvDate;
             let curlFtvSolarDate = calendar.conversion(curlFtvYearDate);
             if (new Date(nowDate) <= new Date(curlFtvSolarDate)){
                 reslFtvSolarDate = curlFtvSolarDate;
             }
 
-            //N-1�?            let prelFtvYearDate = (currentYear-1) + '-' + lFtvDate;
+            //N-1ĺš´
+            let prelFtvYearDate = (currentYear-1) + '-' + lFtvDate;
             let prelFtvSolarDate = calendar.conversion(prelFtvYearDate);
             if (new Date(nowDate) <= new Date(prelFtvSolarDate)){
                 reslFtvSolarDate = prelFtvSolarDate;
             }
 
-            //计算差�?            let diffTime = calendar.diffTimeToDaily(nowDate, reslFtvSolarDate);
+            //čŽĄçŽĺˇŽĺź
+            let diffTime = calendar.diffTimeToDaily(nowDate, reslFtvSolarDate);
             if (diffTime == 0) {
                 var obj = {todayName:lFtvName,todayDate:'', todayContent:''};
                 todayArr.push(obj);
@@ -582,7 +611,8 @@ const handleLFtvDate = (nowDate, currentYear, todayArr, latelyArr) => {
     }
 };
 
-//处理二十四节�?const handleTermDate = (nowDate, currentYear, todayArr, latelyArr) => {
+//ĺ¤çäşĺĺčć°
+const handleTermDate = (nowDate, currentYear, todayArr, latelyArr) => {
     let termArr = daily.term;
     if(termArr.length > 0){
         let tempName = '';
@@ -594,7 +624,7 @@ const handleLFtvDate = (nowDate, currentYear, todayArr, latelyArr) => {
             let termName = element.name;
             let termMonth = element.month;
 
-            //特殊处理
+            //çšćŽĺ¤ç
             let termSortStr;
             if(termSort <= 22){
                 termSortStr = termSort + 2;
@@ -602,20 +632,24 @@ const handleLFtvDate = (nowDate, currentYear, todayArr, latelyArr) => {
                 termSortStr = termSort - 22;
             }
 
-            //N+1�?            let nextTermSolarDate = calendar.conversionTerm(currentYear+1, termMonth, termSortStr);
+            //N+1ĺš´
+            let nextTermSolarDate = calendar.conversionTerm(currentYear+1, termMonth, termSortStr);
             let resTermSolarDate = nextTermSolarDate;
 
-            //N�?            let curTermSolarDate = calendar.conversionTerm(currentYear, termMonth, termSortStr);
+            //Nĺš´
+            let curTermSolarDate = calendar.conversionTerm(currentYear, termMonth, termSortStr);
             if (new Date(nowDate) <= new Date(curTermSolarDate)){
                 resTermSolarDate = curTermSolarDate;
             }
 
-            //N-1�?            let preTermSolarDate = calendar.conversionTerm(currentYear-1, termMonth, termSortStr);
+            //N-1ĺš´
+            let preTermSolarDate = calendar.conversionTerm(currentYear-1, termMonth, termSortStr);
             if (new Date(nowDate) <= new Date(preTermSolarDate)){
                 resTermSolarDate = preTermSolarDate;
             }
 
-            //计算差�?            let diffTime = calendar.diffTimeToDaily(nowDate, resTermSolarDate);
+            //čŽĄçŽĺˇŽĺź
+            let diffTime = calendar.diffTimeToDaily(nowDate, resTermSolarDate);
             if (diffTime == 0) {
                 var obj = {todayName:termName,todayDate:'', todayContent:''};
                 todayArr.push(obj);
@@ -632,13 +666,13 @@ const handleLFtvDate = (nowDate, currentYear, todayArr, latelyArr) => {
             }
         }
 
-        tempName = '�?+tempSort+'个节�?+tempName;
+        tempName = 'çŹŹ'+tempSort+'ä¸Şčć°'+tempName;
         var obj = {tempName:tempName,tempTime:tempTime};
         latelyArr.push(obj);
     }
 };
 
-//处理国际节日
+//ĺ¤çĺ˝éčćĽ
 const handleInternationDate = (nowDate, currentYear, todayArr, latelyArr) => {
     let internationArr = daily.internation;
     if(internationArr.length > 0) {
@@ -653,7 +687,8 @@ const handleInternationDate = (nowDate, currentYear, todayArr, latelyArr) => {
             if (new Date(nowDate) > new Date(nextInternationArrDate)) {
                 nextInternationArrDate = currentYear + 1 + '-' + targetArr[0] + '-' + targetArr[1];
             }
-            //计算差�?            let diffTime = calendar.diffTimeToDaily(nowDate, nextInternationArrDate);
+            //čŽĄçŽĺˇŽĺź
+            let diffTime = calendar.diffTimeToDaily(nowDate, nextInternationArrDate);
             if (diffTime == 0) {
                 var obj = {todayName: internationArrName, todayDate: '', todayContent: ''};
                 todayArr.push(obj);
@@ -673,7 +708,7 @@ const handleInternationDate = (nowDate, currentYear, todayArr, latelyArr) => {
     }
 };
 
-//处理阳历节日
+//ĺ¤çéłĺčćĽ
 const handleSFtvDate = (nowDate, currentYear, todayArr, intAllArr) => {
     let sFtvArr = daily.sFtv;
     if(sFtvArr.length > 0){
@@ -688,7 +723,8 @@ const handleSFtvDate = (nowDate, currentYear, todayArr, intAllArr) => {
             if (new Date(nowDate) > new Date(nextSFtvDate)){
                 nextSFtvDate = currentYear+1+'-'+ targetArr[0]+'-'+targetArr[1];
             }
-            //计算差�?            let diffTime = calendar.diffTimeToDaily(nowDate, nextSFtvDate);
+            //čŽĄçŽĺˇŽĺź
+            let diffTime = calendar.diffTimeToDaily(nowDate, nextSFtvDate);
             if (diffTime == 0) {
                 var obj = {todayName:sFtvName,todayDate:'', todayContent:''};
                 todayArr.push(obj);
@@ -708,7 +744,7 @@ const handleSFtvDate = (nowDate, currentYear, todayArr, intAllArr) => {
     }
 };
 
-//处理特殊节日
+//ĺ¤ççšćŽčćĽ
 const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
     let specialArr = daily.special;
     if(specialArr.length > 0){
@@ -727,7 +763,8 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
             if (new Date(nowDate) > new Date(nextSpecialSolarDate)){
                 nextSpecialSolarDate = calendar.conversionParentDate(currentYear+1, specialMonth, specialWeek, specialNums);
             }
-            //计算差�?            let diffTime = calendar.diffTimeToDaily(nowDate, nextSpecialSolarDate);
+            //čŽĄçŽĺˇŽĺź
+            let diffTime = calendar.diffTimeToDaily(nowDate, nextSpecialSolarDate);
             if (diffTime == 0) {
                 var obj = {todayName:specialName,todayDate:'', todayContent:''};
                 todayArr.push(obj);
@@ -746,7 +783,8 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
     }
 };
 
-//获取复活�?const getEasterDate = (year) => {
+//čˇĺĺ¤ć´ťč
+const getEasterDate = (year) => {
     const a = year % 19;
     const b = Math.floor(year / 100);
     const c = year % 100;
@@ -761,42 +799,51 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
     const m = Math.floor((a + 11 * h + 22 * l) / 451);
     const month = Math.floor((h + l - 7 * m + 114) / 31);
     const day = ((h + l - 7 * m + 114) % 31) + 1;
-    let easterDates = new Date(year, month - 1, day); // 注意：月份是 0 索引�? 表示 4 �?    let easterYear = easterDates.getFullYear();
+    let easterDates = new Date(year, month - 1, day); // ćł¨ćďźćäť˝ćŻ 0 ç´˘ĺźďź3 čĄ¨ç¤ş 4 ć
+    let easterYear = easterDates.getFullYear();
     let easterMonth = easterDates.getMonth();
     let easterDate = easterDates.getDate();
     let easterDateStr = `${easterYear}-` + `${(easterMonth + 1) < 10 ? '0' + (easterMonth + 1) : (easterMonth + 1)}-${(easterDate) < 10 ? '0' + (easterDate) : (easterDate)}`;
     return easterDateStr;
 };
 
-//处理复活�?const handleEasterDate = (nowDate, currentYear, todayArr, intAllArr) => {
-    //复活�?    //N+1�?    let nextEasterDate = getEasterDate(currentYear+1);
+//ĺ¤çĺ¤ć´ťč
+const handleEasterDate = (nowDate, currentYear, todayArr, intAllArr) => {
+    //ĺ¤ć´ťč
+    //N+1ĺš´
+    let nextEasterDate = getEasterDate(currentYear+1);
     let resEasterDate = nextEasterDate;
 
-    //N�?    let curEasterDate = getEasterDate(currentYear);
+    //Nĺš´
+    let curEasterDate = getEasterDate(currentYear);
     if (new Date(nowDate) <= new Date(curEasterDate)){
         resEasterDate = curEasterDate;
     }
 
-    //N-1�?    let preEasterDate = getEasterDate(currentYear-1);
+    //N-1ĺš´
+    let preEasterDate = getEasterDate(currentYear-1);
     if (new Date(nowDate) <= new Date(preEasterDate)){
         resEasterDate = preEasterDate;
     }
 
-    //计算差�?    let diffTime = calendar.diffTimeToDaily(nowDate, resEasterDate);
+    //čŽĄçŽĺˇŽĺź
+    let diffTime = calendar.diffTimeToDaily(nowDate, resEasterDate);
     if (diffTime == 0) {
-        var obj = {todayName:`复活节`,todayDate:'', todayContent:''};
+        var obj = {todayName:`ĺ¤ć´ťč`,todayDate:'', todayContent:''};
         todayArr.push(obj);
     }else{
-        var obj = {tempName:`复活节`,tempTime:diffTime};
+        var obj = {tempName:`ĺ¤ć´ťč`,tempTime:diffTime};
         intAllArr.push(obj);
     }
 };
 
-// �?handleLegalDate 函数后添加以下函�?
-// 处理三伏�?const handleSanFuDate = (nowDate, currentYear, tipsArr) => {
+// ĺ¨ handleLegalDate ĺ˝ć°ĺćˇťĺ äťĽä¸ĺ˝ć°
+
+// ĺ¤çä¸äźĺ¤Š
+const handleSanFuDate = (nowDate, currentYear, tipsArr) => {
     let date = new Date(nowDate);
 
-    // 计算夏季三伏天的开始日期、结束日期和持续天数
+    // čŽĄçŽĺ¤ĺ­Łä¸äźĺ¤Šçĺźĺ§ćĽćăçťććĽćĺćçť­ĺ¤Šć°
     let sanFuDates = calendar.calculateSanFuDates(currentYear);
     if (sanFuDates) {
         let tipContentStr = "";
@@ -804,12 +851,13 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
             let sanFuStartDateStr = formatDate(sanFuDate.startDate);
             let diffTime = calendar.diffTimeToDaily(nowDate, sanFuStartDateStr);
 
-            // 接近三伏�?            date.setHours(0, 0, 0, 0);
+            // ćĽčżä¸äźĺ¤Š
+            date.setHours(0, 0, 0, 0);
             if (date >= sanFuDate.startDate && date <= sanFuDate.endDate) {
                 let sanFudays = calendar.sumTimeToNow(sanFuStartDateStr, nowDate);
-                tipContentStr = `🔅夏季三伏�?�?{sanFuDate.name}】第${sanFudays+1}天，请大家注意避暑。\n`;
+                tipContentStr = `đĺ¤ĺ­Łä¸äźĺ¤Š-ă${sanFuDate.name}ăçŹŹ${sanFudays+1}ĺ¤ŠďźčŻˇĺ¤§ĺŽśćł¨ćéżćă\n`;
             } else if (tipContentStr === "" && diffTime > 0 && diffTime < 8) {
-                tipContentStr = `⏳距离夏季三伏天-�?{sanFuDate.name}】还�?{diffTime}天（持续${sanFuDate.days}天：${formatMMDate(sanFuDate.startDate)} ~ ${formatMMDate(sanFuDate.endDate)}）\n`;
+                tipContentStr = `âłčˇçŚťĺ¤ĺ­Łä¸äźĺ¤Š-ă${sanFuDate.name}ăčżć${diffTime}ĺ¤Šďźćçť­${sanFuDate.days}ĺ¤Šďź${formatMMDate(sanFuDate.startDate)} ~ ${formatMMDate(sanFuDate.endDate)}ďź\n`;
             }
         });
 
@@ -819,14 +867,16 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
     }
 };
 
-// 处理四九�?const handleSiJiuDate = (nowDate, currentYear, tipsArr) => {
+// ĺ¤çĺäšĺ¤Š
+const handleSiJiuDate = (nowDate, currentYear, tipsArr) => {
     let date = new Date(nowDate);
 
-    // 获取今年和去年的冬至日期
+    // čˇĺäťĺš´ĺĺťĺš´çĺŹčłćĽć
     let dongzhiDateThisYear = calendar.conversionTerm(currentYear, "12", 24);
     let dongzhiDateLastYear = calendar.conversionTerm(currentYear - 1, "12", 24);
 
-    // 计算今年和去年的冬季四九天的开始日期、结束日�?    let sijiuDatesThisYear = calendar.calculateSanjiuSeason(currentYear, new Date(dongzhiDateThisYear));
+    // čŽĄçŽäťĺš´ĺĺťĺš´çĺŹĺ­Łĺäšĺ¤Šçĺźĺ§ćĽćăçťććĽć
+    let sijiuDatesThisYear = calendar.calculateSanjiuSeason(currentYear, new Date(dongzhiDateThisYear));
     let sijiuDatesLastYear = calendar.calculateSanjiuSeason(currentYear - 1, new Date(dongzhiDateLastYear));
 
     let allSijiuDates = sijiuDatesLastYear.concat(sijiuDatesThisYear);
@@ -837,21 +887,22 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
             let sijiuStartDate = formatMMDate(sijiuDate.startDate);
             let sijiuEndDate = formatMMDate(sijiuDate.endDate);
 
-            // 跨年处理
+            // čˇ¨ĺš´ĺ¤ç
             let sijiuStartDateStr = sijiuDate.startDate.getFullYear() + '-' + sijiuStartDate;
             let sijiuEndDateStr = sijiuDate.endDate.getFullYear() + '-' + sijiuEndDate;
 
             let diffTime = calendar.diffTimeToDaily(nowDate, sijiuStartDateStr);
 
-            // 接近四九�?            date.setHours(0, 0, 0, 0);
+            // ćĽčżĺäšĺ¤Š
+            date.setHours(0, 0, 0, 0);
             let sijiuStartDateObj = new Date(sijiuStartDateStr).setHours(0, 0, 0, 0);
             let sijiuEndDateObj = new Date(sijiuEndDateStr).setHours(0, 0, 0, 0);
 
             if (date >= sijiuStartDateObj && date <= sijiuEndDateObj) {
                 let sijiudays = calendar.sumTimeToNow(sijiuStartDateStr, nowDate);
-                tipContentStr = `❄冬季四九天-�?{sijiuDate.name}】第${sijiudays + 1}天，一九二九不出手，三九四九冰上走，请大家注意保暖。\n`;
+                tipContentStr = `âĺŹĺ­Łĺäšĺ¤Š-ă${sijiuDate.name}ăçŹŹ${sijiudays + 1}ĺ¤Šďźä¸äšäşäšä¸ĺşćďźä¸äšĺäšĺ°ä¸čľ°ďźčŻˇĺ¤§ĺŽśćł¨ćäżćă\n`;
             } else if (tipContentStr === "" && diffTime > 0 && diffTime < 8) {
-                tipContentStr = `⏳距离冬季四九天-�?{sijiuDate.name}】还�?{diffTime}天（持续9天：${sijiuStartDateStr} ~ ${sijiuEndDateStr}）\n`;
+                tipContentStr = `âłčˇçŚťĺŹĺ­Łĺäšĺ¤Š-ă${sijiuDate.name}ăčżć${diffTime}ĺ¤Šďźćçť­9ĺ¤Šďź${sijiuStartDateStr} ~ ${sijiuEndDateStr}ďź\n`;
             }
         });
 
@@ -861,15 +912,16 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
     }
 };
 
-// 处理梅雨�?const handleMeiYuDate = (nowDate, currentYear, tipsArr) => {
+// ĺ¤çć˘é¨ĺ­Ł
+const handleMeiYuDate = (nowDate, currentYear, tipsArr) => {
     let date = new Date(nowDate);
 
-    // 芒种日期
+    // čç§ćĽć
     let mangZhongDate = calendar.conversionTerm(currentYear, "06", 11);
-    // 小暑日期
+    // ĺ°ććĽć
     let xiaoshuDate = calendar.conversionTerm(currentYear, "07", 13);
 
-    // 计算梅雨季的开始日期、结束日期和持续天数
+    // čŽĄçŽć˘é¨ĺ­Łçĺźĺ§ćĽćăçťććĽćĺćçť­ĺ¤Šć°
     let meiYuSeason = calendar.calculateMeiYuSeason(currentYear, new Date(mangZhongDate), new Date(xiaoshuDate));
 
     if (meiYuSeason) {
@@ -882,9 +934,9 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
         if (date >= meiYuSeason.startDate && date <= meiYuSeason.endDate) {
             let meiYudays = calendar.sumTimeToNow(meiYuStartDateStr, nowDate);
             let meiYuEndDays = calendar.sumTimeToNow(meiYuEndDateStr, nowDate);
-            tipContentStr = `🌧梅雨季第${meiYudays+1}天，阴雨持续连绵，高温高湿，距离出梅还有${meiYuEndDays+1}天。\n`;
+            tipContentStr = `đ§ć˘é¨ĺ­ŁçŹŹ${meiYudays+1}ĺ¤Šďźé´é¨ćçť­čżçťľďźéŤć¸ŠéŤćšżďźčˇçŚťĺşć˘čżć${meiYuEndDays+1}ĺ¤Šă\n`;
         } else if (diffTime > 0 && diffTime < 8) {
-            tipContentStr = `⏳距离梅雨季还有${diffTime}天（持续${meiYuSeason.duration}天：${formatMMDate(meiYuSeason.startDate)} ~ ${formatMMDate(meiYuSeason.endDate)}）\n`;
+            tipContentStr = `âłčˇçŚťć˘é¨ĺ­Łčżć${diffTime}ĺ¤Šďźćçť­${meiYuSeason.duration}ĺ¤Šďź${formatMMDate(meiYuSeason.startDate)} ~ ${formatMMDate(meiYuSeason.endDate)}ďź\n`;
         }
 
         if (tipContentStr.length > 0) {
@@ -893,7 +945,8 @@ const handleSpecialDate = (nowDate, currentYear, todayArr, intAllArr) => {
     }
 };
 
-// 添加日期格式化辅助函�?const formatDate = (date) => {
+// ćˇťĺ ćĽćć źĺźĺčžĺŠĺ˝ć°
+const formatDate = (date) => {
     let year = date.getFullYear();
     let month = String(date.getMonth() + 1).padStart(2, '0');
     let day = String(date.getDate()).padStart(2, '0');
@@ -906,7 +959,8 @@ const formatMMDate = (date) => {
     return `${month}-${day}`;
 };
 
-//处理证件有效�?const handleLicenseDate = (nowDate, currentYear, todayLicenseArr, endLicenseArr) => {
+//ĺ¤çčŻäťśććć
+const handleLicenseDate = (nowDate, currentYear, todayLicenseArr, endLicenseArr) => {
     let licenseArr = daily.license;
     if(licenseArr.length > 0){
         for (let i = 0; i < licenseArr.length; i++) {
@@ -914,26 +968,28 @@ const formatMMDate = (date) => {
             let licenseName = element.name;
             let licenseDate = element.date;
             if (new Date(nowDate) <= new Date(licenseDate)){
-                //计算差�?                let diffTime = calendar.diffTimeToDaily(nowDate, licenseDate);
+                //čŽĄçŽĺˇŽĺź
+                let diffTime = calendar.diffTimeToDaily(nowDate, licenseDate);
                 if (diffTime < 31){
                     if(diffTime == 0){
-                        todayLicenseArr.push(`· ${licenseName}🚨 \n 今天到期，请尽快处理\n`);
+                        todayLicenseArr.push(`Âˇ ${licenseName}đ¨ \n äťĺ¤Šĺ°ćďźčŻˇĺ°˝ĺżŤĺ¤ç\n`);
                     }else{
                         let todayDate = '<'+licenseDate.split('-').join('.')+'>';
-                        todayLicenseArr.push(`· ${licenseName}🚨 \n ${todayDate} \n ${diffTime}天后到期，请及时处理\n`);
+                        todayLicenseArr.push(`Âˇ ${licenseName}đ¨ \n ${todayDate} \n ${diffTime}ĺ¤Šĺĺ°ćďźčŻˇĺćśĺ¤ç\n`);
                     }
                 }else{
-                    endLicenseArr.push(`· ${licenseName}: ${diffTime}天`);
+                    endLicenseArr.push(`Âˇ ${licenseName}: ${diffTime}ĺ¤Š`);
                 }
             }
         }
     }
 };
 
-//把列表处理为字符�?module.exports = handleTimeList = () => {
+//ćĺčĄ¨ĺ¤çä¸şĺ­çŹŚä¸˛
+module.exports = handleTimeList = (opts = {}) => {
     return new Promise(async (resolve, reject) => {
         try {
-            //内容数组
+            //ĺĺŽšć°çť
             let content = []
             let contentArr = []
             let todayArr = []
@@ -943,7 +999,8 @@ const formatMMDate = (date) => {
             let todayLicenseArr = []
             let endLicenseArr = []
 
-            //把今日日期转为YYYY-MM-DD的格�?第一�?            let date = new Date();
+            //ćäťćĽćĽćč˝Źä¸şYYYY-MM-DDçć źĺź çŹŹä¸ĺ¤Š
+            let date = new Date();
             let currentYear = date.getFullYear();
             let currentMonth = date.getMonth();
             let currentDate = date.getDate();
@@ -952,34 +1009,39 @@ const formatMMDate = (date) => {
 
             let lunarDate = calendar.solar2lunar();
 
-            //当天阴历和当前天�?            handleFestivalSolarDate(nowDate, lunarDate, currentYear, content);
+            //ĺ˝ĺ¤Šé´ĺĺĺ˝ĺĺ¤Šć°
+            handleFestivalSolarDate(nowDate, lunarDate, currentYear, content);
 
-            //纪念�?            handleAnniversaryDate(nowDate, currentYear, todayArr, latelyArr);
+            //çşŞĺżľćĽ
+            handleAnniversaryDate(nowDate, currentYear, todayArr, latelyArr);
 
-            //生日
+            //çćĽ
             handleBirthdayDate(nowDate, lunarDate, currentYear, todayArr, latelyArr);
 
-            //法定节假�?            handleLegalDate(nowDate, currentMDDate, currentYear, todayArr, latelyArr, tipsArr);
+            //ćłĺŽčĺćĽ
+            handleLegalDate(nowDate, currentMDDate, currentYear, todayArr, latelyArr, tipsArr);
 
-            //阴历节日
+            //é´ĺčćĽ
             handleLFtvDate(nowDate, currentYear, todayArr, latelyArr);
 
-            //二十四节�?            handleTermDate(nowDate, currentYear, todayArr, latelyArr);
+            //äşĺĺčć°
+            handleTermDate(nowDate, currentYear, todayArr, latelyArr);
 
-            //国际节日
+            //ĺ˝éčćĽ
             handleInternationDate(nowDate, currentYear, todayArr, latelyArr);
 
-            //阳历节日
+            //éłĺčćĽ
             handleSFtvDate(nowDate, currentYear, todayArr, intAllArr);
 
-            //特殊节日
+            //çšćŽčćĽ
             handleSpecialDate(nowDate, currentYear, todayArr, intAllArr);
 
-            //处理复活�?            handleEasterDate(nowDate, currentYear, todayArr, intAllArr);
+            //ĺ¤çĺ¤ć´ťč
+            handleEasterDate(nowDate, currentYear, todayArr, intAllArr);
 
-            //复活节、特殊节日和阳历节日合并
+            //ĺ¤ć´ťčăçšćŽčćĽĺéłĺčćĽĺĺšś
             if(intAllArr.length > 0) {
-                // 找到tempTime最小的对象并放入新数组
+                // ćžĺ°tempTimećĺ°çĺŻščąĄĺšśćžĺĽć°ć°çť
                 const minObj = intAllArr.reduce((prev, curr) => {
                     return curr.tempTime < prev.tempTime ? curr : prev;
                 });
@@ -987,17 +1049,21 @@ const formatMMDate = (date) => {
                 latelyArr.push(minObj);
             }
 
-            // 梅雨�?            handleMeiYuDate(nowDate, currentYear, tipsArr);
+            // ć˘é¨ĺ­Ł
+            handleMeiYuDate(nowDate, currentYear, tipsArr);
 
-            // 夏季三伏�?            handleSanFuDate(nowDate, currentYear, tipsArr);
+            // ĺ¤ĺ­Łä¸äźĺ¤Š
+            handleSanFuDate(nowDate, currentYear, tipsArr);
 
-            // 冬季四九�?            handleSiJiuDate(nowDate, currentYear, tipsArr);
+            // ĺŹĺ­Łĺäšĺ¤Š
+            handleSiJiuDate(nowDate, currentYear, tipsArr);
 
-            //证件有效�?            handleLicenseDate(nowDate, currentYear, todayLicenseArr, endLicenseArr);
+            //čŻäťśććć
+            handleLicenseDate(nowDate, currentYear, todayLicenseArr, endLicenseArr);
 
-            content.push(`📆重要节日 \n`);
+            content.push(`đéčŚčćĽ \n`);
 
-            //最近的节日或今日的节日
+            //ćčżçčćĽćäťćĽçčćĽ
             if(todayArr.length > 0){
                 let todayTempArr = [];
                 for (var i = 0; i < todayArr.length; i++) {
@@ -1005,18 +1071,18 @@ const formatMMDate = (date) => {
                     let todayDate = todayArr[i].todayDate;
                     let todayContent = todayArr[i].todayContent;
                     if (todayName != ''&&todayDate != ''&&todayContent != ''){
-                        todayTempArr.push(`今天�?{todayName}🎉 \n${todayContent} ${todayDate} \n`);
+                        todayTempArr.push(`äťĺ¤ŠćŻ${todayName}đ \n${todayContent} ${todayDate} \n`);
                     }else if (todayName != ''&&todayDate != ''){
-                        todayTempArr.push(`今天�?{todayName}🎉 \n${todayContent} \n`);
+                        todayTempArr.push(`äťĺ¤ŠćŻ${todayName}đ \n${todayContent} \n`);
                     }else if (todayName != ''){
-                        todayTempArr.push(`今天�?{todayName}🎉 \n`);
+                        todayTempArr.push(`äťĺ¤ŠćŻ${todayName}đ \n`);
                     }
                 }
                 todayTempArr.sort((a, b) => a.length - b.length);
                 content = content.concat(todayTempArr);
-                //随机笑话
+                //éćşçŹčŻ
                 //const res = await axios.get('https://api.uomg.com/api/comments.163?format=json')
-                //content.push(`${res.data.data.content} \n-- 来自@${res.data.data.nickname}�?{res.data.data.name}�?{res.data.data.artistsname}\n`)
+                //content.push(`${res.data.data.content} \n-- ćĽčŞ@${res.data.data.nickname}ă${res.data.data.name}ă${res.data.data.artistsname}\n`)
             }
 
             //let filteredArr = latelyArr.filter(item => item['tempTime'] !== 0);
@@ -1027,28 +1093,29 @@ const formatMMDate = (date) => {
                 let tempName = latelyArr[j].tempName;
                 let tempTime = latelyArr[j].tempTime;
                 if (minTempTime == latelyArr[j].tempTime){
-                    minTempArr.push(`* ${tempName}: ${tempTime}天`);
+                    minTempArr.push(`* ${tempName}: ${tempTime}ĺ¤Š`);
                 }else{
-                    contentArr.push(`· ${tempName}: ${tempTime}天`);
+                    contentArr.push(`Âˇ ${tempName}: ${tempTime}ĺ¤Š`);
                 }
             }
 
             if (minTempArr.length > 0){
-                content.push(`📌距离下一个节日`);
+                content.push(`đčˇçŚťä¸ä¸ä¸ŞčćĽ`);
                 minTempArr.sort((a, b) => a.length - b.length);
                 minTempArr[minTempArr.length-1] = minTempArr[minTempArr.length-1] + '\n';
                 content = content.concat(minTempArr);
             }
 
 
-            //输出补班/放假温馨提示
+            //čžĺşčĄĽç­/ćžĺć¸ŠéŚ¨ćç¤ş
             if(tipsArr.length > 0){
                 for (var i = 0; i < tipsArr.length; i++) {
                     content.push(tipsArr[i]);
                 }
             }
 
-            //输出内容按长度排�?            if(contentArr.length > 0) {
+            //čžĺşĺĺŽšćéżĺşŚćĺş
+            if(contentArr.length > 0) {
                 let tempContentArr = [];
                 for (var i = 0; i < contentArr.length; i++) {
                     tempContentArr.push(contentArr[i]);
@@ -1057,13 +1124,13 @@ const formatMMDate = (date) => {
                 content = content.concat(tempContentArr);
             }
 
-            //累计恋爱天数
+            //ç´ŻčŽĄćçąĺ¤Šć°
             if(loveContent != undefined) {
                 content.push(loveContent);
             }
 
             let licenseContentArr = [];
-            licenseContentArr.push(`\n💳证件有效�?\n`);
+            licenseContentArr.push(`\nđłčŻäťśććć \n`);
             if (todayLicenseArr.length > 0) {
                 todayLicenseArr.sort((a, b) => calendar.getTextLength(a) - calendar.getTextLength(b));
                 licenseContentArr = licenseContentArr.concat(todayLicenseArr);
@@ -1077,9 +1144,12 @@ const formatMMDate = (date) => {
             const contentForMqtt = content.join('\n');
             const contentStr = contentForMqtt + '\n' + licenseContent;
 
-            console.log('获取重要节日成功\n', contentStr);
+            console.log('čˇĺéčŚčćĽćĺ\n', contentStr);
             await sendMqttMsg(contentForMqtt, licenseContent);
-            resolve(contentForMqtt)
+            const hasNearLicense = todayLicenseArr.length > 0;
+            const hasNearFestival = latelyArr.length > 0 && minTempTime < 8;
+            if (opts.returnMeta) resolve({ content: contentForMqtt, licenseContent, hasNearLicense, hasNearFestival });
+            else resolve(contentForMqtt);
         } catch (error) {
             reject(error.message || error)
         }

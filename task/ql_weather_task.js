@@ -19,19 +19,21 @@ const handleWeatherContent = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let content = []
+      let isRaining = false
+      let hasAlarm = false
       const { weather} = require('../sh/input')
 
-      //根据不同的配置，增加不同的内容
-      // 天气模块
       if (weather.open) {
         const handleWeather = require('../functions/weather')
-        const weatherContent = await handleWeather({ recordMonthlyRain: true })
-        if ('' != weatherContent) {
-          content.push(`${weatherContent}`)
+        const pack = await handleWeather({ recordMonthlyRain: true, returnMeta: true })
+        isRaining = !!pack.isRaining
+        hasAlarm = !!pack.hasAlarm
+        if (pack.content) {
+          content.push(`${pack.content}`)
         }
       }
 
-      resolve(content.join(''))//转字符串
+      resolve({ content: content.join(''), isRaining, hasAlarm })
     } catch (error) {
       console.log('处理内容失败', error.message || error);
       reject(error.message || error)
@@ -41,12 +43,9 @@ const handleWeatherContent = () => {
 
 !(async() => {
      qlCheckUpdate(SCRIPT_VERSION, 'ql_weather_task.js')
-     //获取配置
      await requireConfig();
-     //获取天气内容
-     const content = await handleWeatherContent();
-    //发送通知
-    if (content.length > 0) {
+     const { content, isRaining, hasAlarm } = await handleWeatherContent();
+    if (content.length > 0 && (isRaining || hasAlarm)) {
         await notify.sendNotify(`大家好🐇`, `${content}`)
     }
 })()

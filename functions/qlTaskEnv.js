@@ -1,12 +1,4 @@
 const INPUT_EXPORT_KEYS = [
-    'SENTENCE_OPEN',
-    'START_OPEN',
-    'START_CONTENT',
-    'END_OPEN',
-    'END_CONTENT',
-    'END_TIME',
-    'ROBOT_PUSH',
-    'ROBOT_KEY',
     'LOTTERY_OPEN',
     'LOTTERY_SD',
     'LOTTERY_KL8',

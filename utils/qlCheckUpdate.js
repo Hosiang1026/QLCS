@@ -6,7 +6,7 @@ module.exports = function qlCheckUpdate(scriptVersion, scriptBaseName) {
   const req = https.request(
     {
       hostname: 'raw.githubusercontent.com',
-      path: '/Hosiang1026/QLCS/master/task/' + scriptBaseName,
+      path: '/Hosiang1026/DailyRemind/master/task/' + scriptBaseName,
       method: 'GET',
       headers: { 'User-Agent': 'Mozilla/5.0 (Node)' },
     },
@@ -23,7 +23,7 @@ module.exports = function qlCheckUpdate(scriptVersion, scriptBaseName) {
               console.log('正在自动更新脚本...')
             }
             exec(
-              'ql raw https://gitee.com/hosiang1026/QLCS/raw/master/task/' +
+              'ql raw https://gitee.com/hosiang1026/DailyRemind/raw/master/task/' +
                 scriptBaseName +
                 ' &'
             )

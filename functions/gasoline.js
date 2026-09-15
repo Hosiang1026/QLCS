@@ -468,8 +468,11 @@ module.exports = handleGasoline = async () => {
         const text = content.join('\n');
         const zj95Now = scrapedByProvince['浙江']?.oilPrice_95 ?? 0;
         const prevZj95 = readLastZj95();
-        const skipNotify = prevZj95 != null && zj95Now > 0 && Math.abs(prevZj95 - zj95Now) < 0.0001;
-        if (zj95Now > 0 && !skipNotify) writeLastZj95(zj95Now);
+        const priceSame = prevZj95 != null && zj95Now > 0 && Math.abs(prevZj95 - zj95Now) < 0.0001;
+        const wd = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Shanghai', weekday: 'short' }).format(new Date());
+        const isWeekend = wd === 'Sat' || wd === 'Sun';
+        const skipNotify = priceSame && !isWeekend;
+        if (zj95Now > 0 && !priceSame) writeLastZj95(zj95Now);
 
         await sendMqttMsg(text);
 

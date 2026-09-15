@@ -14,29 +14,24 @@ const SCRIPT_VERSION = 1.0
 const $ = new Env('节日提醒');
 let notify;
 
-//处理要发送的节日内容
 const handleDailyContent = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let content = []
-      const {sentence, daily} = require('../sh/input')
+      let shouldNotify = false
+      const { daily } = require('../sh/input')
 
-      //根据不同的配置，增加不同的内容
-
-      //纪念日模块
       if (daily.open) {
         const handleTimeList = require('../functions/daily')
-        const handleTimeContent = await handleTimeList()
-        if (handleTimeContent.length > 0) {
-          content.push(`${handleTimeContent}`)
-        }
+        const pack = await handleTimeList({ returnMeta: true })
+        const hasNearLicense = !!pack.hasNearLicense
+        const hasNearFestival = !!pack.hasNearFestival
+        shouldNotify = hasNearLicense || hasNearFestival
+        if (pack.content) content.push(pack.content)
+        if (hasNearLicense && pack.licenseContent) content.push(pack.licenseContent)
       }
 
-      //如果啥都没输入的话
-      if (content.length == 0) {
-        content.push('请最少配置一个模块内容,没有内容无法推送')
-      }
-      resolve(content.join(''))//转字符串
+      resolve({ content: content.join(''), shouldNotify })
     } catch (error) {
       console.log('处理内容失败', error.message || error);
       reject(error.message || error)
@@ -46,12 +41,11 @@ const handleDailyContent = () => {
 
 !(async() => {
      qlCheckUpdate(SCRIPT_VERSION, 'ql_daily_task.js')
-     //获取配置
      await requireConfig();
-     //获取节日内容
-     const content = await handleDailyContent();
-     //发送通知
-     await notify.sendNotify(`早上好🦔`, `${content}`)
+     const { content, shouldNotify } = await handleDailyContent();
+     if (shouldNotify && content.length > 0) {
+       await notify.sendNotify(`早上好🦔`, `${content}`)
+     }
 })()
 .catch((e) => {
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')

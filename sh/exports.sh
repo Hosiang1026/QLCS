@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# QLCS：任务执行前 source 本文件（或把 export 写入青龙配置文件）
+# DailyRemind：任务执行前 source 本文件（或把 export 写入青龙配置文件）
 # 使用 sh/input.js 的脚本会校验以下变量均已配置（见 qlTaskEnv.js）
 set -euo pipefail
 
@@ -13,25 +13,11 @@ export mqtt_username="admin"
 # MQTT 密码
 export mqtt_password="admin"
 
-## 推送文案与机器人
-# 随机句子总开关
+## 推送文案
 export SENTENCE_OPEN='true'
-# 是否 @所有人
-export AT_ALL='false'
-# 开头语开关
-export START_OPEN='false'
-# 开头语文案
-export START_CONTENT='大家好🐷'
-# 结尾语开关
 export END_OPEN='false'
-# 结尾语文案
 export END_CONTENT='本通知 By 狂欢马克思'
-# 时间前缀文案
 export END_TIME='通知时间: '
-# 企业微信机器人推送开关
-export ROBOT_PUSH='false'
-# 企业微信机器人 Webhook Key
-export ROBOT_KEY='07f4c380'
 
 ## 电信套餐
 export TELECOM_USER='13800138000你的密码'

@@ -109,8 +109,7 @@ function mutateColdRecord(db, cityName, dataStr, refDate) {
 function formatRainSunMonthlyStats(db, cityList, refDate) {
     const y = refDate.getFullYear();
     const padM = (n) => String(n).padStart(2, '0');
-    const maxMonthKey = `${y}-${padM(refDate.getMonth() + 1)}`;
-    const prefix = `${y}-`;
+    const monthKey = `${y}-${padM(refDate.getMonth() + 1)}`;
     const names = [];
     for (const c of cityList) {
         if (!names.includes(c.city_name)) names.push(c.city_name);
@@ -122,23 +121,17 @@ function formatRainSunMonthlyStats(db, cityList, refDate) {
         const sM = db.sunnyRecords[cityName] || {};
         const hM = db.hotRecords[cityName] || {};
         const cM = db.coldRecords[cityName] || {};
-        const months = new Set([...Object.keys(rM), ...Object.keys(sM), ...Object.keys(hM), ...Object.keys(cM)]);
-        const sorted = [...months]
-            .filter((mk) => mk.startsWith(prefix) && mk >= `${y}-01` && mk <= maxMonthKey)
-            .sort();
+        const r = typeof rM[monthKey] === 'number' ? rM[monthKey] : 0;
+        const s = typeof sM[monthKey] === 'number' ? sM[monthKey] : 0;
+        const h = typeof hM[monthKey] === 'number' ? hM[monthKey] : 0;
+        const c = typeof cM[monthKey] === 'number' ? cM[monthKey] : 0;
         if (i > 0) lines.push('');
-        if (sorted.length === 0) {
+        if (r === 0 && s === 0 && h === 0 && c === 0) {
             lines.push(`🚩${cityName}: （暂无）`);
             continue;
         }
         lines.push(`🚩${cityName} `);
-        for (const mk of sorted) {
-            const r = typeof rM[mk] === 'number' ? rM[mk] : 0;
-            const s = typeof sM[mk] === 'number' ? sM[mk] : 0;
-            const h = typeof hM[mk] === 'number' ? hM[mk] : 0;
-            const c = typeof cM[mk] === 'number' ? cM[mk] : 0;
-            lines.push(`${mk}: 雨${r}天 晴${s}天 高温${h}天 低温${c}天`);
-        }
+        lines.push(`${monthKey}: 雨${r}天 晴${s}天 高温${h}天 低温${c}天`);
     }
     return lines.join('\n');
 }
@@ -447,6 +440,7 @@ module.exports = handleWeather = (opts = {}) => {
         mergedAllContent.push("🌈实时天气信息");
         const dataList = [];
         const now = new Date();
+        let isRaining = false;
         let rainDb = null;
         if (opts.recordMonthlyRain) rainDb = loadRainDb();
         const startDate = new Date(now.getFullYear(), 9, 1); // 10月1日 00:00:00
@@ -469,6 +463,8 @@ module.exports = handleWeather = (opts = {}) => {
             const dataStr = await syncDataWithRetry(url, headers);
             if (dataStr != null) {
                 dataList.push(dataStr);
+                const rainCtx = parseSkDayContext(dataStr, now);
+                if (rainCtx && String(rainCtx.data.weather || '').indexOf('雨') !== -1) isRaining = true;
                 if (rainDb) {
                     mutateRainRecord(rainDb, city.city_name, dataStr, now);
                     mutateSunnyRecord(rainDb, city.city_name, dataStr, now);
@@ -506,6 +502,7 @@ module.exports = handleWeather = (opts = {}) => {
         }
 
         let alarmContent = []
+        let hasAlarm = false;
         for(let city of cities) {
             console.log(`正在获取 ${city.city_name} 的天气预警数据...`);
             const url = alarmUrl.replace("{city_code}", city.city_code);
@@ -516,6 +513,7 @@ module.exports = handleWeather = (opts = {}) => {
             }
         }
         if (alarmContent.length >0){
+            hasAlarm = true;
             let alarmTitle = []
             alarmTitle.push("\n🚨天气预警信息");
             alarmContent = alarmTitle.concat(alarmContent);
@@ -527,7 +525,8 @@ module.exports = handleWeather = (opts = {}) => {
         if (rainDb) saveRainDb(rainDb);
         let body = mergedAllContent.join('\n');
         if (opts.recordMonthlyRain && rainDb) body += formatRainSunMonthlyStats(rainDb, cities, now);
-        resolve(body)
+        if (opts.returnMeta) resolve({ content: body, isRaining, hasAlarm });
+        else resolve(body);
 
     } catch (error) {
         console.log('处理天气预报数据失败', error.message || error);

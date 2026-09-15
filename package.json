@@ -1,18 +1,16 @@
 {
-  "name": "QLCS",
+  "name": "DailyRemind",
   "version": "1.0.0",
-  "description": "青龙脚本库：天气、课表、油价、彩票等定时推送。",
-  "main": "app.js",
+  "description": "日常提醒：天气、课表、油价、彩票等定时推送与青龙脚本。",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "deps": "npm install && pip3 install -r py/requirements.txt"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Hosiang1026/QLCS.git"
+    "url": "https://github.com/Hosiang1026/DailyRemind.git"
   },
   "keywords": [
-    "青龙脚本库"
+    "日常提醒"
   ],
   "author": "Hosiang1026",
   "license": "ISC",
@@ -20,11 +18,9 @@
     "axios": "^1.15.2",
     "cheerio": "^1.1.0",
     "dotenv": "^10.0.0",
-    "express": "^4.22.1",
     "got": "^11.8.6",
     "iconv-lite": "^0.6.3",
     "mqtt": "^5.10.4",
-    "node-schedule": "^2.1.1",
     "tough-cookie": "^4.1.4",
     "tunnel": "^0.0.6"
   }

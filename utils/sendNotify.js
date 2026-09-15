@@ -176,7 +176,7 @@ function getDefaultNotifyAuthor() {
         u = String(u).replace(/^git\+/, '').replace(/\.git\s*$/i, '').trim();
         if (u) return '\n\n本通知 By ' + u;
     } catch (e) {}
-    return '\n\n本通知 By QLCS';
+    return '\n\n本通知 By DailyRemind';
 }
 let isnewql = fs.existsSync('/ql/data/config/auth.json');
 let strCKFile = "";
@@ -1488,7 +1488,7 @@ function ddBotNotify(text, desp) {
             json: {
                 msgtype: 'text',
                 text: {
-                    content: ` ${text}\n\n${desp}`,
+                    content: String(text || '').trim() ? `${text}\n\n${desp}` : `${desp}`,
                 },
             },
             headers: {
@@ -1557,7 +1557,7 @@ function qywxBotNotify(text, desp) {
             json: {
                 msgtype: 'text',
                 text: {
-                    content: ` ${text}\n\n${desp}`,
+                    content: String(text || '').trim() ? `${text}\n\n${desp}` : `${desp}`,
                 },
             },
             headers: {

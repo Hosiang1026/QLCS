@@ -85,17 +85,28 @@ function getLotteryWeekday(d) {
 }
 
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.57";
-const options = { headers: { "User-Agent": UA }, rejectUnauthorized: false };
+const options = {
+	headers: {
+		"User-Agent": UA,
+		Referer: "https://www.cwl.gov.cn/",
+	},
+	timeout: 20000,
+	validateStatus: () => true,
+};
 const lotteryURLs = [
-	"http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=ssq&pageNo=1&pageSize=1&systemType=PC",
-	"http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=3d&pageNo=1&pageSize=1&systemType=PC",
-	"http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=kl8&pageNo=1&pageSize=1&systemType=PC",
-	"http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=qlc&pageNo=1&pageSize=1&systemType=PC"
+	"https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=ssq&pageNo=1&pageSize=1&systemType=PC",
+	"https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=3d&pageNo=1&pageSize=1&systemType=PC",
+	"https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=kl8&pageNo=1&pageSize=1&systemType=PC",
+	"https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=qlc&pageNo=1&pageSize=1&systemType=PC"
 ];
 
 async function getLotteryData(url) {
 	const response = await axios.get(url, options);
-	return response.data.result[0];
+	const result = response.data && response.data.result;
+	if (!Array.isArray(result) || !result[0]) {
+		throw new Error(`彩票接口无数据: ${url} status=${response.status}`);
+	}
+	return result[0];
 }
 
 function sleep(ms) {
@@ -480,40 +491,11 @@ function predictNextSSQ(data) {
 	};
 }
 
-function getLotteryCookie() {
-	return new Promise(async (resolve, reject) => {
-	try{
-	    const response = await axios.get("http://www.cwl.gov.cn", { headers: { "User-Agent": UA } });
-		options.headers.Cookie = response.headers["set-cookie"][0];
-		process.env.ck = options.headers.Cookie;
-		resolve(process.env.ck)
-	} catch (error) {
-		console.log('处理cookie失败', error.message || error);
-		reject(error.message || error)
-	}
-})
-}
-
 //处理福利彩票数据
 module.exports = handleLottery = () => {
 	return new Promise(async (resolve, reject) => {
 	try {
-		getLotteryCookie();
-		// 等待 5000 毫秒（5 秒）
-		await sleep(5000);
 		let lotteryContent = [];
-		const cookieString = process.env.ck;
-		const expiresString = cookieString.match(/Expires=([^;]+)/)[1];
-		const isExpired = new Date().getTime() > new Date(expiresString).getTime();
-
-		if (isExpired) {
-			const response = await axios.get("http://www.cwl.gov.cn", { headers: { "User-Agent": UA } });
-			options.headers.Cookie = response.headers["set-cookie"][0];
-			process.env.ck = options.headers.Cookie;
-		} else {
-			options.headers.Cookie = cookieString;
-		}
-
 		const [SSQ, SD, KL8, QLC] = await Promise.all(lotteryURLs.map(getLotteryData));
 
 		lotteryContent.push(`📈福利彩票`);

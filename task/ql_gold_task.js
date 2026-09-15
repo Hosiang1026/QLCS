@@ -228,7 +228,7 @@ async function sendMqttMsg(goldContent) {
       Number.isFinite(Number(prev)) &&
       round2(cur) === round2(prev)
     if (!same) {
-      await notify.sendNotify('', newcontent)
+      await notify.sendNotify('👑今日金价', newcontent.replace(/^👑今日金价\s*\n*/, '').trim())
     }
     try {
       await sendMqttMsg(newcontent)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 源自 https://github.com/Cp0204/ChinaTelecomMonitor ，已适配 QLCS 多账号
+# 源自 https://github.com/Cp0204/ChinaTelecomMonitor ，已适配 DailyRemind 多账号
 
 import os
 import re
@@ -41,6 +41,14 @@ def _save_state(state):
     os.makedirs(os.path.dirname(_STATE_PATH), exist_ok=True)
     with open(_STATE_PATH, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
+
+
+def _as_fail_count(v, default=0):
+    try:
+        n = int(v)
+        return n if n >= 0 else default
+    except (TypeError, ValueError):
+        return default
 
 
 def _parse_accounts():
@@ -157,7 +165,7 @@ def _default_notify_author():
             return "\n\n本通知 By " + u
     except Exception:
         pass
-    return "\n\n本通知 By QLCS"
+    return "\n\n本通知 By DailyRemind"
 
 
 def _append_task_notify_footer(body):
@@ -393,7 +401,7 @@ def run_one_account(telecom, phonenum, password, slice_data, push_config_extra, 
     CONFIG_DATA = {
         "user": {"phonenum": phonenum, "password": password},
         "login_info": slice_data.get("login_info") or {},
-        "loginFailTime": int(slice_data.get("loginFailTime") or 0),
+        "loginFailTime": _as_fail_count(slice_data.get("loginFailTime")),
     }
     if push_config_extra:
         CONFIG_DATA["push_config"] = push_config_extra
@@ -426,12 +434,7 @@ def run_one_account(telecom, phonenum, password, slice_data, push_config_extra, 
             slice_data["login_info"] = login_info
             slice_data["loginFailTime"] = 0
             return True
-        login_fail_time = int(
-            data.get("responseData", {})
-            .get("data", {})
-            .get("loginFailResult", {})
-            .get("loginFailTime", login_fail_time + 1)
-        )
+        login_fail_time = _as_fail_count(login_fail_time) + 1
         CONFIG_DATA["loginFailTime"] = login_fail_time
         slice_data["loginFailTime"] = login_fail_time
         add_notify(f"自动登录：已连续失败{login_fail_time}次")
@@ -444,7 +447,7 @@ def run_one_account(telecom, phonenum, password, slice_data, push_config_extra, 
         telecom.set_login_info(login_info)
     else:
         if not auto_login():
-            return notifys, "🟢"
+            return notifys, "🟢", None
 
     important_data = telecom.qry_important_data()
     if important_data.get("responseData"):
@@ -457,13 +460,13 @@ def run_one_account(telecom, phonenum, password, slice_data, push_config_extra, 
     rd = (important_data or {}).get("responseData") or {}
     if not rd.get("data"):
         add_notify(f"获取主要信息失败: {phonenum} {json.dumps(important_data, ensure_ascii=False)[:500]}")
-        return notifys, "🟢"
+        return notifys, "🟢", None
 
     try:
         summary = telecom.to_summary(rd["data"])
     except Exception as e:
         add_notify(f"简化主要信息出错: {e}")
-        return notifys, "🟢"
+        return notifys, "🟢", None
 
     if summary:
         print(f"简化主要信息：{summary}")
@@ -538,7 +541,12 @@ def run_one_account(telecom, phonenum, password, slice_data, push_config_extra, 
     add_notify(notify_str.strip())
     slice_data["login_info"] = CONFIG_DATA.get("login_info", slice_data.get("login_info", {}))
     slice_data["loginFailTime"] = CONFIG_DATA.get("loginFailTime", 0)
-    return notifys, status_icon
+    bal = summary.get("balance")
+    try:
+        bal = int(bal) if bal is not None else None
+    except (TypeError, ValueError):
+        bal = None
+    return notifys, status_icon, bal
 
 
 def main():
@@ -556,11 +564,12 @@ def main():
     all_blocks = []
     mqtt_by_phone = defaultdict(list)
     worst_icon = "🟢"
+    balance_neg = False
     for phonenum, password in accounts:
         telecom = Telecom()
         slice_data = state.setdefault(phonenum, {})
         try:
-            part, icon = run_one_account(telecom, phonenum, password, slice_data, push_extra, bills_by_phone)
+            part, icon, bal = run_one_account(telecom, phonenum, password, slice_data, push_extra, bills_by_phone)
             all_blocks.extend(part)
             for blk in part:
                 if (blk or "").strip():
@@ -569,6 +578,8 @@ def main():
                 worst_icon = icon
             elif icon == "🟡" and worst_icon == "🟢":
                 worst_icon = icon
+            if bal is not None and bal < 0:
+                balance_neg = True
         except Exception as ex:
             print(phonenum, ex)
             err = f"📱 {phonenum} 查询异常: {ex}"
@@ -582,7 +593,7 @@ def main():
         by_phone = {p: "\n\n".join(v) for p, v in mqtt_by_phone.items() if v}
         by_phone_fmt = {p: _append_task_notify_footer(s) for p, s in by_phone.items()}
         body_fmt = _append_task_notify_footer(body) if len(by_phone) <= 1 else ""
-        if TELECOM_ONLY_WARN and worst_icon == "🟢":
+        if TELECOM_ONLY_WARN and worst_icon == "🟢" and not balance_neg:
             print("流量使用在均匀范围内，跳过通知")
         elif len(by_phone) > 1:
             seen = set()
