@@ -12,13 +12,9 @@ ql repo https://github.com/Hosiang1026/QLCS.git "task/" "app.js|ql_table_task.js
 cd /ql/data/repo/Hosiang1026_QLCS_master && npm run deps
 ```
 
-电信任务另装 Python 依赖：
+`npm run deps` = `npm install` + `pip3 install -r py/requirements.txt`
 
-```
-cd /ql/data/repo/Hosiang1026_QLCS_master && pip3 install -r py/requirements.txt
-```
-
-注： 配置文件，参考/sh/exports.sh
+注：配置文件参考 `/sh/exports.sh`；Node 建议 ≥ 20.18.1
 
 
 #### 任务列表
@@ -39,10 +35,14 @@ cd /ql/data/repo/Hosiang1026_QLCS_master && pip3 install -r py/requirements.txt
 
 #### 更新日志
 
+##### v2.0.1 (2026-09-15)
+
+- `axios` 升级至 `^1.20.0`
+- 增加 `overrides`（form-data / ws / undici / ip-address / qs）修复依赖漏洞
+
 ##### v2.0.0 (2026-09-15)
 
-- `npm run deps` 仅安装 Node 依赖，移除 `sh/install_deps.sh`
-- 电信任务需单独 `pip3 install -r py/requirements.txt`（含 `paho-mqtt`）
+- `npm run deps` 安装 Node + Python 依赖，移除 `sh/install_deps.sh`
 - 实况天气仅下雨或预警时推送
 - 节日提醒仅证件临期或节日临近时推送
 - 油价：浙江 95 号未变价且非周末跳过推送
